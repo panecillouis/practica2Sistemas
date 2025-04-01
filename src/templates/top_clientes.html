@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Top Clientes con Más Incidencias{% endblock %}
+
+{% block content %}
+<section>
+    <h2>Top Clientes con Más Incidencias</h2>
+    <p>A continuación, se muestra un listado de los clientes con mayor número de incidencias reportadas.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Número de Incidencias</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente.nombre }}</td>
+                <td>{{ cliente.incidencias }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

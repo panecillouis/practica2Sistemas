@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Empleados con Mayor Tiempo en Resolución{% endblock %}
+
+{% block content %}
+<section>
+    <h2>Empleados con Mayor Tiempo en Resolución</h2>
+    <p>Lista de empleados que han dedicado más tiempo en resolver incidencias.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Empleado</th>
+                <th>Tiempo Total de Resolución (horas)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for empleado in empleados %}
+            <tr>
+                <td>{{ empleado.nombre }}</td>
+                <td>{{ empleado.tiempo_resolucion }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

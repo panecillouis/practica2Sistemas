@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Cuadro de Mando Integral (CMI){% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="icon" type="image/jpg" href="/static/favicon.jpg">
+</head>
+<body>
+    <header>
+        <h1>Cuadro de Mando Integral (CMI) - Seguridad SOC</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/top_clientes">Top Clientes con Más Incidencias</a></li>
+                <li><a href="/top_incidentes">Top Tipos de Incidencias con Mayor Tiempo de Resolución</a></li>
+                <li><a href="/empleados_resolucion">Empleados con Mayor Tiempo en Resolución</a></li>
+                <li><a href="/vulnerabilidades">Últimas 10 Vulnerabilidades en Tiempo Real</a></li>
+                <li><a href="/ejercicio_libre">Análisis y Reportes Adicionales</a></li>
+                <li><a href="/prediccion_cliente">Predicción de Cliente Crítico</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer>
+        <p>Práctica 2 - Sistemas de Información para la Gestión Empresarial - 2024-2025</p>
+    </footer>
+</body>
+</html>
