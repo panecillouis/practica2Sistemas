@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Últimas 10 Vulnerabilidades en Tiempo Real{% endblock %}
+
+{% block content %}
+<section>
+    <h2>Últimas 10 Vulnerabilidades en Tiempo Real</h2>
+    <p>Datos extraídos de la API de CVE Search.</p>
+    <ul>
+        {% for vulnerabilidad in vulnerabilidades %}
+        <li>{{ vulnerabilidad.id }} - {{ vulnerabilidad.descripcion }}</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}

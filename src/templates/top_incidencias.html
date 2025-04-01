@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Top Tipos de Incidencias con Mayor Tiempo de Resolución{% endblock %}
+
+{% block content %}
+<section>
+    <h2>Top Tipos de Incidencias con Mayor Tiempo de Resolución</h2>
+    <p>Listado de los tipos de incidencias que han requerido más tiempo para resolverse.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo de Incidencia</th>
+                <th>Tiempo Promedio de Resolución (horas)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for incidencia in incidentes %}
+            <tr>
+                <td>{{ incidencia.tipo }}</td>
+                <td>{{ incidencia.tiempo_resolucion }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

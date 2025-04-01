@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Cuadro de Mando Integral (CMI){% endblock %}
+
+{% block content %}
+<section class="intro">
+    <h2>Bienvenido al Cuadro de Mando Integral (CMI)</h2>
+    <p>Este sistema proporciona análisis de datos y reportes interactivos para la toma de decisiones.</p>
+    <p>Utilizamos datos en tiempo real para mejorar la eficiencia del departamento de Seguridad (SOC).</p>
+    <div class="menu-buttons">
+        <a href="/top_clientes" class="btn">Top Clientes con Más Incidencias</a>
+        <a href="/top_incidentes" class="btn">Top Tipos de Incidencias con Mayor Tiempo de Resolución</a>
+        <a href="/empleados_resolucion" class="btn">Empleados con Mayor Tiempo en Resolución</a>
+        <a href="/vulnerabilidades" class="btn">Últimas 10 Vulnerabilidades en Tiempo Real</a>
+        <a href="/ejercicio_libre" class="btn">Análisis y Reportes Adicionales</a>
+        <a href="/prediccion_cliente" class="btn">Predicción de Cliente Crítico</a>
+    </div>
+</section>
+{% endblock %}
