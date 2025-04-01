@@ -42,5 +42,6 @@ def inicializar_db():
     mensaje = "Base de datos inicializada correctamente."
     return render_template("inicializacion.html", mensaje=mensaje)
 
+  
 if __name__ == '__main__':
     app.run(debug=False)
