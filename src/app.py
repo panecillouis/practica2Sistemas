@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from db import *
 from json_loader import cargar_datos_json
 from data_processor import *
-import graficos
 import matplotlib.pyplot as plt
 
 app = Flask(__name__)

@@ -1,34 +1,74 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Cuadro de Mando Integral (CMI){% endblock %}</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <link rel="icon" type="image/jpg" href="/static/favicon.jpg">
+    
+    <!-- BOOTSTRAP STYLES -->
+    <link href="/static/css/bootstrap.css" rel="stylesheet" />
+    <!-- FONTAWESOME STYLES -->
+    <link href="/static/css/font-awesome.css" rel="stylesheet" />
+    <!-- CUSTOM STYLES -->
+    <link href="/static/css/custom.css" rel="stylesheet" />
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css" />
+    <!-- FAVICON -->
+    <link rel="icon" type="image/jpg" href="/static/img/favicon.jpg" />
 </head>
 <body>
-    <header>
-        <h1>Cuadro de Mando Integral (CMI) - Seguridad SOC</h1>
-        <nav>
-            <ul>
-                <li><a href="/">Inicio</a></li>
-                <li><a href="/top_clientes">Top Clientes con Más Incidencias</a></li>
-                <li><a href="/top_incidentes">Top Tipos de Incidencias con Mayor Tiempo de Resolución</a></li>
-                <li><a href="/empleados_resolucion">Empleados con Mayor Tiempo en Resolución</a></li>
-                <li><a href="/vulnerabilidades">Últimas 10 Vulnerabilidades en Tiempo Real</a></li>
-                <li><a href="/ejercicio_libre">Análisis y Reportes Adicionales</a></li>
-                <li><a href="/prediccion_cliente">Predicción de Cliente Crítico</a></li>
-            </ul>
+    <div id="wrapper">
+        <!-- Barra de navegación superior -->
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="adjust-nav">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    
+                </div>
+                <span class="logout-spn">
+                    <a href="#" style="color:#fff;">INICIO</a>
+                </span>
+            </div>
+        </div>
+
+
+        <nav class="navbar-default navbar-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav" id="main-menu">
+                    <li><a href="/"><i class="fa fa-home"></i> Inicio</a></li>
+                    <li><a href="/top_clientes"><i class="fa fa-users"></i> Top Clientes</a></li>
+                    <li><a href="/top_incidentes"><i class="fa fa-warning"></i> Top Incidencias</a></li>
+                    <li><a href="/empleados_resolucion"><i class="fa fa-clock-o"></i> Tiempo por Empleado</a></li>
+                    <li><a href="/vulnerabilidades"><i class="fa fa-bug"></i> Vulnerabilidades</a></li>
+                    <li><a href="/ejercicio_libre"><i class="fa fa-bar-chart-o"></i> Análisis Extra</a></li>
+                    <li><a href="/prediccion_cliente"><i class="fa fa-line-chart"></i> Predicción Cliente</a></li>
+                </ul>
+            </div>
         </nav>
-    </header>
+
+        <div id="page-wrapper">
+            <div id="page-inner">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+      
     
-    <main>
-        {% block content %}{% endblock %}
-    </main>
-    
-    <footer>
-        <p>Práctica 2 - Sistemas de Información para la Gestión Empresarial - 2024-2025</p>
-    </footer>
+        <div class="row">
+           <div class="col-lg-12" >
+               &copy;  2025 CMI | Diseñado por: <a href="http://binarytheme.com" style="color:#fff;"  target="_blank">SemperFile</a>
+           </div>
+   </div>
+   </div>
+    <!-- BOOTSTRAP SCRIPTS -->
+    <script src="/static/js/jquery-1.10.2.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <!-- CUSTOM SCRIPTS -->
+    <script src="/static/js/custom.js"></script>
 </body>
 </html>
