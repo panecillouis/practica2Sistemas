@@ -1,15 +1,21 @@
 {% extends 'base.html' %}
 
-{% block title %}Últimas 10 Vulnerabilidades en Tiempo Real{% endblock %}
+{% block title %}Últimas Vulnerabilidades CVE{% endblock %}
 
 {% block content %}
-<section>
-    <h2>Últimas 10 Vulnerabilidades en Tiempo Real</h2>
-    <p>Datos extraídos de la API de CVE Search.</p>
-    <ul>
-        {% for vulnerabilidad in vulnerabilidades %}
-        <li>{{ vulnerabilidad.id }} - {{ vulnerabilidad.descripcion }}</li>
-        {% endfor %}
-    </ul>
-</section>
+<div class="container mt-5">
+  <h2 class="text-center text-dark">
+    <i class="fa fa-shield text-danger"></i> Últimas 10 Vulnerabilidades Publicadas (NVD)
+  </h2>
+  <hr>
+
+  <div class="list-group">
+    {% for cve in cves %}
+    <div class="list-group-item bg-white shadow-sm mb-2 border-start border-5 border-danger">
+      <h5 class="mb-1">{{ cve.id }}</h5>
+      <p class="mb-1 text-muted">{{ cve.descripcion }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}

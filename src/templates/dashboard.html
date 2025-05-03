@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <h1 class="text-center mb-4">Dashboard</h1>
+
+    <!-- Panel de control (formularios) en dos columnas -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-11">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="fa fa-sliders"></i> Panel de Control
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Formulario para top_x_clientes -->
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <form method="POST">
+                                <div class="form-group mb-2">
+                                    <label for="top_x_clientes">Top Clientes:</label>
+                                    <div class="input-group">
+                                        <input type="number" id="top_x_clientes" name="top_x_clientes" class="form-control" value="{{ top_x_clientes }}" min="1" max="10" />
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-refresh"></i> Actualizar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">Mostrar clientes con mayor número de incidencias</small>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Formulario para top_x_incidencias -->
+                        <div class="col-md-6">
+                            <form method="POST">
+                                <div class="form-group mb-2">
+                                    <label for="top_x_incidencias">Top Incidencias:</label>
+                                    <div class="input-group">
+                                        <input type="number" id="top_x_incidencias" name="top_x_incidencias" class="form-control" value="{{ top_x_incidencias }}" min="1" max="10" />
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-refresh"></i> Actualizar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">Mostrar las incidencias más reportadas</small>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+       <!-- Fila con los gráficos -->
+       <div class="row justify-content-center">
+        <!-- Gráfico de Top Clientes -->
+        <div class="col-md-6 mb-4">
+            <h3>Top Clientes</h3>
+            <!-- Usamos el atributo 'data-bs-toggle' y 'data-bs-target' para activar el lightbox -->
+            <a href="{{ url_for('static', filename='graficos/top_clientes.png') }}" data-bs-toggle="modal" data-bs-target="#imageModal">
+                <img src="{{ url_for('static', filename='graficos/top_clientes.png') }}" alt="Gráfico de incidencias" class="img-fluid img-thumbnail mt-3" />
+            </a>
+        </div>
+
+        <!-- Gráfico de Top Incidencias -->
+        <div class="col-md-6 mb-4">
+            <h3>Top Incidencias</h3>
+             <!-- Usamos el atributo 'data-bs-toggle' y 'data-bs-target' para activar el lightbox -->
+             <a href="{{ url_for('static', filename='graficos/top_incidencias.png') }}" data-bs-toggle="modal" data-bs-target="#imageModal">
+                <img src="{{ url_for('static', filename='graficos/top_incidencias.png') }}" alt="Gráfico de tipos de incidencia" class="img-fluid img-thumbnail mt-3" />
+            </a>
+        </div>
+    </div>
+        <!-- Fila de los CVEs -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-danger text-white">
+                <i class="fa fa-shield"></i> Últimas 10 Vulnerabilidades CVE (NVD)
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Columna izquierda (primeros 5 CVEs) -->
+                    <div class="col-md-6">
+                        <div class="list-group">
+                            {% for cve in cves[:5] %}
+                            <div class="list-group-item bg-white border-start border-4 border-danger mb-2">
+                                <h5 class="mb-1 text-primary">{{ cve.id }}</h5>
+                                <p class="mb-1 text-muted">{{ cve.descripcion }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Columna derecha (últimos 5 CVEs) -->
+                    <div class="col-md-6">
+                        <div class="list-group">
+                            {% for cve in cves[5:] %}
+                            <div class="list-group-item bg-white border-start border-4 border-danger mb-2">
+                                <h5 class="mb-1 text-primary">{{ cve.id }}</h5>
+                                <p class="mb-1 text-muted">{{ cve.descripcion }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+
+  <!-- Modal para ver la imagen en grande -->
+  <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Ver Imagen</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- La imagen que se ve grande cuando se hace clic -->
+                <img id="modalImage" src="" class="img-fluid" alt="Imagen ampliada" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Script para cargar la imagen en el modal -->
+<script>
+// Escuchamos el evento para actualizar la imagen en el modal
+const imageLinks = document.querySelectorAll('a[data-bs-toggle="modal"]');
+imageLinks.forEach(link => {
+    link.addEventListener('click', (event) => {
+        const imageUrl = event.target.closest('a').href; // Obtener la URL de la imagen
+        document.getElementById('modalImage').src = imageUrl; // Establecer la URL en el modal
+    });
+});
+</script>
+{% endblock %}

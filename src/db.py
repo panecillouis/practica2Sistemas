@@ -1,6 +1,11 @@
 import sqlite3
-
+import os
 def crear_tablas():
+    # Eliminar el archivo si ya existe
+    if os.path.exists('sistema_etl.db'):
+        os.remove('sistema_etl.db')
+
+    # Crear conexión y continuar con la creación de tablas
     conn = sqlite3.connect('sistema_etl.db')
     cursor = conn.cursor()
 
@@ -58,6 +63,25 @@ def crear_tablas():
 
     conn.commit()
     conn.close()
+def insertar_datos_iniciales(data):
+    for ticket in data['tickets_emitidos']:
+        id_ticket = insertar_ticket(ticket['cliente'], ticket['fecha_apertura'], 
+                                ticket['fecha_cierre'], ticket['es_mantenimiento'],
+                                ticket['satisfaccion_cliente'], ticket['tipo_incidencia'],ticket['es_critico'])
+    
+        if 'contactos_con_empleados' in ticket:
+            for contacto in ticket['contactos_con_empleados']:
+                insertar_contacto_empleado(id_ticket, contacto['id_emp'], contacto['fecha'], contacto['tiempo'])
+    
+    for cliente in data["clientes"]:
+        insertar_cliente(cliente["id_cli"], cliente["nombre"], cliente["telefono"], cliente["provincia"])
+
+    for tipo in data["tipos_incidentes"]:
+        insertar_tipo_incidente(tipo["id_cli"], tipo["nombre"])
+        
+    for empleado in data["empleados"]:
+        insertar_empleado(empleado["id_emp"], empleado["nombre"], empleado["nivel"], empleado["fecha_contrato"])
+    
 
 def insertar_cliente(id_cliente, nombre, telefono, provincia):
     conn = sqlite3.connect('sistema_etl.db')
@@ -80,13 +104,13 @@ def insertar_tipo_incidente(id_tipo, nombre):
     conn.commit()
     conn.close()
     
-def insertar_ticket(cliente_id, fecha_apertura, fecha_cierre, es_mantenimiento, satisfaccion_cliente, tipo_incidencia):
+def insertar_ticket(cliente_id, fecha_apertura, fecha_cierre, es_mantenimiento, satisfaccion_cliente, tipo_incidencia, es_critico=False):
     conn = sqlite3.connect('sistema_etl.db')
     cursor = conn.cursor()
     cursor.execute('''
-    INSERT INTO Tickets (cliente_id, fecha_apertura, fecha_cierre, es_mantenimiento, satisfaccion_cliente, tipo_incidencia)
-    VALUES (?, ?, ?, ?, ?, ?)
-    ''', (cliente_id, fecha_apertura, fecha_cierre, es_mantenimiento, satisfaccion_cliente, tipo_incidencia))
+    INSERT INTO Tickets (cliente_id, fecha_apertura, fecha_cierre, es_mantenimiento, satisfaccion_cliente, tipo_incidencia, es_critico)
+    VALUES (?, ?, ?, ?, ?, ?,?)
+    ''', (cliente_id, fecha_apertura, fecha_cierre, es_mantenimiento, satisfaccion_cliente, tipo_incidencia, es_critico))
     id_ticket = cursor.lastrowid  # Obtener el ID del ticket recién insertado
     conn.commit()
     conn.close()
