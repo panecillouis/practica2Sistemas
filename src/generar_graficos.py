@@ -37,9 +37,12 @@ def grafico_top_clientes(df_clientes, top_x):
     # Asegúrate de que la carpeta 'graficos' exista
     base_dir = os.path.dirname(__file__)  # Esto apunta a la carpeta donde está app.py
     
-    graficos_dir = os.path.join(base_dir, 'static/graficos')
-    
-    ruta_graficos = os.path.join(base_dir, 'static/graficos/top_clientes.png')
+    graficos_dir = carpeta_graficos_existe()
+    ruta_graficos = os.path.join(graficos_dir, 'top_clientes.png')
+    print(ruta_graficos)
+    os.makedirs(graficos_dir, exist_ok=True)
+
+
 
     plt.tight_layout()
     plt.savefig(ruta_graficos)
