@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Nuevo Ticket - CMI{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Insertar Ticket para Clasificación</h2>
+  <form action="{{ url_for('prediccion_cliente') }}" method="post" class="mx-auto" style="max-width: 600px;">
+    <div class="form-group mb-3">
+      <label for="cliente">Cliente:</label>
+      <select name="cliente" id="cliente" class="form-control">
+        {% for cli in clientes %}
+          <option value="{{ cli.id_cliente }}">{{ cli.nombre_cliente }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group mb-3">
+      <label for="fecha_apertura">Fecha de Apertura:</label>
+      <input type="date" name="fecha_apertura" class="form-control" required>
+    </div>
+    <div class="form-group mb-3">
+      <label for="fecha_cierre">Fecha de Cierre:</label>
+      <input type="date" name="fecha_cierre" class="form-control" required>
+    </div>
+    <div class="form-group mb-3">
+      <label for="mantenimiento">Indicador de Mantenimiento:</label>
+      <div class="form-check">
+        <input type="checkbox" name="mantenimiento" id="mantenimiento" class="form-check-input">
+        <label for="mantenimiento" class="form-check-label">¿Requiere mantenimiento?</label>
+      </div>
+    </div>
+    <div class="form-group mb-3">
+      <label for="satisfaccion">Satisfacción del Cliente:</label>
+      <input type="number" name="satisfaccion" class="form-control" min="0" max="10" required>
+    </div>
+    <div class="form-group mb-3">
+      <label for="incidencia">Tipo de Incidencia:</label>
+      <select name="incidencia" id="incidencia" class="form-control">
+        {% for inc in incidentes %}
+          <option value="{{ inc.id_tipo }}">{{ inc.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group mb-3">
+      <label for="metodo">Método de Inteligencia Artificial:</label>
+      <select name="metodo" class="form-control">
+        <option value="lr">Regresión Lineal</option>
+        <option value="dt">Decision Tree</option>
+        <option value="rf">Random Forest</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Analizar Ticket</button>
+  </form>
+</div>
+{% endblock %}

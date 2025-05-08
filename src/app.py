@@ -3,16 +3,27 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from models import Usuario, usuarios, cargar_usuarios_registrados, guardar_usuarios_registrados, cifrar_contraseña, verificar_contraseña, obtener_usuario_por_nombre
 import base64
 import io
+import matplotlib
+matplotlib.use('Agg') # Usar Agg para evitar problemas con el backend de la GUI
 import matplotlib.pyplot as plt
 from db import *
 from json_loader import cargar_datos_json
 from data_processor import *
-import matplotlib.pyplot as plt
 from generar_graficos import *
 from generador_pdf import *
+from ticket_classifier import predecir_ticket 
+import json
 
 app = Flask(__name__)
 app.secret_key = "clave_secreta"
+app.config['SESSION_PERMANENT'] = False
+
+@app.after_request
+def no_cache(response):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "-1"
+    return response
 
 # Configurar Flask-Login
 login_manager = LoginManager()
@@ -233,6 +244,22 @@ def generar_pdf():
     # Devolver el PDF como archivo adjunto para su descarga
     return send_file(pdf_file, as_attachment=True, download_name="reporte.pdf", mimetype="application/pdf")
 
+from data_processor import obtener_clientes, obtener_tipos_incidencias
+
+@app.route("/prediccion_cliente", methods=["GET", "POST"])
+def prediccion_cliente():
+    if request.method == "GET":
+        # Cargar datos de clientes e incidentes desde la base de datos
+        clientes = obtener_clientes()
+        incidentes = obtener_tipos_incidencias()
+        return render_template("ticket_form.html", clientes=clientes, incidentes=incidentes)
+    elif request.method == "POST":
+        try:
+            # Recoge el formulario y envía a la función de predicción
+            resultado, grafico = predecir_ticket(request.form)
+            return render_template("ticket_result.html", resultado=resultado, plot_data=grafico)
+        except Exception as e:
+            return render_template("ticket_result.html", resultado=f"Error en la predicción: {e}", plot_data=None)
 
 if __name__ == '__main__':
     app.run(debug=False)

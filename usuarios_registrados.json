@@ -12,5 +12,12 @@
         "nivel": 2,
         "fecha_contrato": "2021-08-30",
         "avatar": "https://www.pngitem.com/pimgs/m/506-5062032_booktag-toy-story-buzz-toy-story-png-transparent.png"
+    },
+    "109": {
+        "username": "Raúl López",
+        "password": "$2b$12$VgZqfG1kYtLO3EWhVr2Pd.2YuXWG3cbChRqrQyXkWNi6ybpSp.RBm",
+        "nivel": 1,
+        "fecha_contrato": "2024-04-22",
+        "avatar": "https://i.ytimg.com/vi/srrOBCWT7ic/hqdefault.jpg"
     }
 }

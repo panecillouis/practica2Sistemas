@@ -62,3 +62,61 @@ def obtener_ultimos_cves(n=10):
     except Exception as e:
         print(f"Error al obtener los CVEs: {e}")
         return []
+
+# Lista de características a usar
+features = ["duracion", "es_mantenimiento", "satisfaccion_cliente", "tipo_incidencia", "contacto_total"]
+# Función para obtener datos de tickets desde la base de datos
+def obtener_datos_tickets():
+
+    conn = sqlite3.connect('sistema_etl.db')
+    
+    query = """
+    SELECT fecha_apertura, fecha_cierre, es_mantenimiento, satisfaccion_cliente, tipo_incidencia, es_critico, cliente_id
+    FROM Tickets
+    """
+    
+    df = pd.read_sql(query, conn)
+    conn.close()
+    
+    # Calcular contacto_total para cada ticket
+    df['contacto_total'] = df['cliente_id'].apply(calcular_contacto_total)  # Suponiendo que tienes una función para esto
+    return df
+
+def calcular_contacto_total(cliente_id):
+    conn = sqlite3.connect('sistema_etl.db')
+    cursor = conn.cursor()
+    
+    query = """
+    SELECT COUNT(*) FROM Contactos_Empleados_Tickets
+    WHERE id_ticket IN (SELECT id_ticket FROM Tickets WHERE cliente_id = ?)
+    """
+    
+    cursor.execute(query, (cliente_id,))
+    total_contactos = cursor.fetchone()[0]
+    
+    conn.close()
+    return total_contactos
+
+
+def obtener_clientes():
+    conn = sqlite3.connect('sistema_etl.db')
+    
+    query = """
+    SELECT id_cliente, nombre_cliente
+    FROM Clientes;
+    """
+    
+    df_clientes = pd.read_sql(query, conn)
+    conn.close()
+    return df_clientes.to_dict(orient='records')
+def obtener_tipos_incidencias():
+    conn = sqlite3.connect('sistema_etl.db')
+    
+    query = """
+    SELECT id_tipo, nombre
+    FROM Tipos_Incidentes;
+    """
+    
+    df_tipos = pd.read_sql(query, conn)
+    conn.close()
+    return df_tipos.to_dict(orient='records')
