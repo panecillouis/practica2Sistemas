@@ -1,0 +1,16 @@
+{
+    "101": {
+        "username": "Juan Pérez",
+        "password": "$2b$12$MM5LoCb.psBqCvi4yBysh.lCa7j96PRXeXccaBTFSgUYKjurjWICS",
+        "nivel": 1,
+        "fecha_contrato": "2020-05-10",
+        "avatar": "https://globalsymbols.com/uploads/production/image/imagefile/17674/17_17675_41ec0485-a97d-467f-80e3-9eb573ded0da.png"
+    },
+    "107": {
+        "username": "Miguel Torres",
+        "password": "$2b$12$sUC7s2MDO/7qmRvWO7v8/e4D4v5SK.JtBKjwTQHCSw/1GFVBfPwNy",
+        "nivel": 2,
+        "fecha_contrato": "2021-08-30",
+        "avatar": "https://www.pngitem.com/pimgs/m/506-5062032_booktag-toy-story-buzz-toy-story-png-transparent.png"
+    }
+}

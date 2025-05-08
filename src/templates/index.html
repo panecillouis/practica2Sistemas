@@ -6,6 +6,11 @@
 <div class="row">
     <div class="col-md-12">
         <h2>Bienvenido al Cuadro de Mando Integral (CMI)</h2>
+        {% if current_user.is_authenticated %}
+            <p class="text-success">Hola, {{ current_user.username }}. ¡Nos alegra verte de nuevo!</p>
+        {% else %}
+            <p>Por favor, <a href="/login">inicia sesión</a> para acceder a todas las funcionalidades.</p>
+        {% endif %}
         <p>Este sistema proporciona análisis de datos y reportes para mejorar la eficiencia del SOC.</p>
     </div>
 </div>
