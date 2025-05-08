@@ -51,6 +51,7 @@ def generar_pdf_reporte(
     df_incidencias,
     top_x_incidencias,
     top_x_vulnerabilidades,
+    df_vulnerabilidades,  
     grafico_top_clientes_path,
     grafico_top_incidencias_path
 ):
@@ -64,7 +65,6 @@ def generar_pdf_reporte(
     pdf.ln(10)
     pdf.cell(0, 10, f"Top {top_x_clientes} Clientes con más Incidencias", ln=True)
 
-    # Usamos df_clientes directamente
     for idx, row in df_clientes.head(top_x_clientes).iterrows():
         pdf.cell(0, 10, f"{row['nombre_cliente']} - {row['num_incidencias']} incidencias", ln=True)
 
@@ -75,12 +75,11 @@ def generar_pdf_reporte(
     finally:
         if os.path.exists(grafico_clientes_temp):
             os.unlink(grafico_clientes_temp)
-    
+
     # --- Sección: Tipos de Incidencia ---
     pdf.ln(10)
     pdf.cell(0, 10, f"Top {top_x_incidencias} Tipos de Incidencias por Tiempo Promedio", ln=True)
 
-    # Usamos df_incidencias directamente
     for idx, row in df_incidencias.head(top_x_incidencias).iterrows():
         pdf.cell(0, 10, f"{row['nombre_tipo_incidencia']} - {round(row['tiempo_trabajado_promedio'], 2)} horas", ln=True)
 
@@ -95,11 +94,16 @@ def generar_pdf_reporte(
     # --- Sección: Vulnerabilidades ---
     pdf.ln(10)
     pdf.cell(0, 10, f"Top {top_x_vulnerabilidades} Vulnerabilidades Más Frecuentes", ln=True)
-    
-    # Aquí puedes incluir la lógica para mostrar las vulnerabilidades si tienes los datos disponibles
 
-    # Guardar PDF
-    output_path = "src/static/pdf/informe_seguridad.pdf"
+    for idx, row in df_vulnerabilidades.head(top_x_vulnerabilidades).iterrows():
+        pdf.cell(0, 10, f"{row['nombre_vulnerabilidad']} - {row['frecuencia']} veces", ln=True)
+
+    # Guardar el PDF
+    output_dir = os.path.join("src", "static", "pdf")
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    output_path = os.path.join(output_dir, "informe_seguridad.pdf")
     pdf.output(output_path)
     return output_path
 

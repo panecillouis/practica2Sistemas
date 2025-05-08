@@ -215,6 +215,7 @@ def ejercicio_libre():
                            top_x_incidencias=top_x_incidencias,
                            top_x_vulnerabilidades=top_x_vulnerabilidades,
                            cves=ultimos_cves)
+
 @app.route('/generar_pdf')
 @login_required
 def generar_pdf():
@@ -229,22 +230,32 @@ def generar_pdf():
     df_incidencias = obtener_top_tipos_incidencias_por_tiempo_trabajado(top_x_incidencias)
     grafico_top_incidencias_path = grafico_top_incidencias(df_incidencias, top_x_incidencias)
 
+    # Obtener los datos de vulnerabilidades usando obtener_ultimos_cves
+    vulnerabilidades = obtener_ultimos_cves(top_x_vulnerabilidades)
+    df_vulnerabilidades = pd.DataFrame(vulnerabilidades)  # Convertir la lista en un DataFrame
+
+    # Renombrar las columnas para que coincidan con las esperadas
+    df_vulnerabilidades.rename(columns={"id": "nombre_vulnerabilidad", "descripcion": "frecuencia"}, inplace=True)
+
+    # Verificar las columnas del DataFrame
+    if 'nombre_vulnerabilidad' not in df_vulnerabilidades.columns or 'frecuencia' not in df_vulnerabilidades.columns:
+        print("Error: Las columnas esperadas no están presentes en df_vulnerabilidades.")
+        return "Error: No se pudieron procesar las vulnerabilidades", 500
+
     # Pasar los DataFrame y los paths a la función de generación de PDF
     pdf_file = generar_pdf_reporte(
         df_clientes, 
         top_x_clientes, 
-        df_clientes.to_dict(orient='records'),  # Pasamos la versión en diccionario de df_clientes
+        df_incidencias, 
         top_x_incidencias, 
-        df_incidencias.to_dict(orient='records'),  # Pasamos la versión en diccionario de df_incidencias
         top_x_vulnerabilidades, 
-        grafico_top_clientes_path,  # Asegúrate de que estás pasando esta variable
-        grafico_top_incidencias_path  # Asegúrate de que estás pasando esta variable
+        df_vulnerabilidades,  
+        grafico_top_clientes_path, 
+        grafico_top_incidencias_path
     )
 
     # Devolver el PDF como archivo adjunto para su descarga
     return send_file(pdf_file, as_attachment=True, download_name="reporte.pdf", mimetype="application/pdf")
-
-from data_processor import obtener_clientes, obtener_tipos_incidencias
 
 @app.route("/prediccion_cliente", methods=["GET", "POST"])
 def prediccion_cliente():
