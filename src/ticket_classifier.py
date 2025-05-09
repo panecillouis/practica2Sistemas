@@ -68,14 +68,19 @@ decision_tree = DecisionTreeClassifier(max_depth=4, random_state=42).fit(X, y)
 random_forest = RandomForestClassifier(n_estimators=50, random_state=42).fit(X, y)
 
 
-def plot_linear_regression_pca(X, y, feature_label="Componente Principal"):
+def plot_linear_regression_pca(X, y):
 
     # Proyecta a 1 dimensión:
     pca = PCA(n_components=1)
     X_pca = pca.fit_transform(X)
     
+    # Identificar la característica más relevante en el componente principal
+    componentes = pca.components_[0]
+    indice_max = np.argmax(np.abs(componentes))  # Índice de la característica con mayor peso
+    caracteristica_principal = X.columns[indice_max]  # Nombre de la característica más relevante
+    
     # Verificamos la cantidad de registros en la proyección
-    print("X_pca.shape =", X_pca.shape)  # Debería ser (50, 1)
+    print("X_pca.shape =", X_pca.shape)  
     
     # Entrena un modelo de regresión lineal sobre la componente principal:
     model_uni = LinearRegression().fit(X_pca, y)
@@ -93,7 +98,7 @@ def plot_linear_regression_pca(X, y, feature_label="Componente Principal"):
     # Agregamos transparencia, borde blanco y tamaño de marcador para visualizar sobrepositions
     ax.scatter(X_pca, y, color="blue", label="Datos", alpha=0.7, edgecolors='w', s=50)
     ax.plot(X_pca_sorted, y_pred_sorted, color="red", linewidth=2, label="Línea de regresión")
-    ax.set_xlabel(feature_label)
+    ax.set_xlabel(f"Componente Principal: {caracteristica_principal}")
     ax.set_ylabel("Objetivo (es_crítico)")
     ax.set_title("Regresión Lineal (Proyección PCA)")
     ax.legend()
@@ -114,14 +119,14 @@ def plot_decision_tree(model):
     nice_features = ["Duración", "Mantenimiento", "Satisfacción", "Tipo Incidencia", "Tiempo Contacto"]
     class_names = ["No Crítico", "Crítico"]
     
-    fig, ax = plt.subplots(figsize=(16,12))  # Aumenta el tamaño para mayor claridad
+    fig, ax = plt.subplots(figsize=(16,12))  
     from sklearn.tree import plot_tree
     plot_tree(model, 
               feature_names=nice_features, 
               class_names=class_names,
               filled=True, 
               rounded=True,
-              fontsize=12,       # Tamaño de fuente más grande para facilitar la lectura
+              fontsize=12,       
               impurity=False)    # Omitimos información de la impureza
     ax.set_title("Árbol de Decisión")
     
@@ -182,7 +187,7 @@ def predecir_ticket(form):
             # Predicción con Regresión Lineal
             pred = linear_model.predict(nuevo_ticket)[0]
             critico = 1 if pred >= 0.5 else 0
-            plot_data = plot_linear_regression_pca(X, y, feature_label="Componente Principal")
+            plot_data = plot_linear_regression_pca(X, y)
         elif metodo == "dt":
             # Predicción con Árbol de Decisión
             critico = decision_tree.predict(nuevo_ticket)[0]
