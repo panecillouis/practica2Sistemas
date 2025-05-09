@@ -4,6 +4,7 @@ import os
 from io import BytesIO
 import tempfile
 import shutil
+import datetime
 
 def imagen_a_ruta_temporal(path_original):
     """Copia la imagen a un archivo temporal y devuelve su ruta."""
@@ -22,6 +23,18 @@ def imagen_a_bytesio(ruta_imagen):
             return buffer
     except FileNotFoundError:
         return None
+    
+def agregar_linea(pdf):
+    pdf.set_draw_color(0, 0, 0) 
+    pdf.set_line_width(0.5)    
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y()) 
+    pdf.ln(5)  
+
+def agregar_pie_pagina(pdf):
+    pdf.set_y(-15)  # Posición desde el final de la página
+    pdf.set_font("Arial", "I", 8)  # Fuente en cursiva y tamaño pequeño
+    pdf.cell(0, 10, f"Informe generado el {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", align="C")
+    
 
 class PDF(FPDF):
     def tabla_simple(self, headers, rows):
@@ -51,52 +64,128 @@ def generar_pdf_reporte(
     df_incidencias,
     top_x_incidencias,
     top_x_vulnerabilidades,
-    df_vulnerabilidades,  
+    df_vulnerabilidades,
     grafico_top_clientes_path,
     grafico_top_incidencias_path
 ):
     pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+
+    # --- Página 1: Título, Imagen de Fondo y Autores ---
     pdf.add_page()
-    pdf.set_font("Arial", "B", 16)
-    pdf.cell(0, 10, "Informe de Seguridad", ln=True)
+
+    # Agregar imagen de fondo
+    try:
+        pdf.image("src/static/img/favicon.jpg", x=0, y=0, w=210, h=297)  # Tamaño A4
+    except Exception as e:
+        print(f"Error al agregar la imagen de fondo: {e}")
+
+    # Título principal
+    pdf.set_font("Arial", "B", 24)
+    pdf.set_text_color(0, 0, 0)  # Texto negro para que contraste con la imagen
+    pdf.cell(0, 10, "Informe de Seguridad", ln=True, align="C")
+    pdf.ln(20)
+
+    # Autores
+    pdf.set_font("Arial", "I", 14)
+    pdf.cell(0, 10, "Autores:", ln=True, align="C")
+    pdf.ln(5)
+    pdf.set_font("Arial", "", 12)
+    pdf.cell(0, 10, "Nawal Boukarssanna Bouazaoui", ln=True, align="C")
+    pdf.cell(0, 10, "Paula Victoria Carrascosa Mancilla", ln=True, align="C")
+    pdf.cell(0, 10, "Alejandro Terrazas Vargas", ln=True, align="C")
+    pdf.ln(20)
+
+    # --- Página del índice ---
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 20)
+    pdf.cell(0, 10, "Índice", ln=True, align="C")
+    pdf.ln(10)
+
+    # Lista para almacenar los elementos del índice
+    indice_items = []
 
     # --- Sección: Clientes ---
-    pdf.set_font("Arial", "", 12)
-    pdf.ln(10)
-    pdf.cell(0, 10, f"Top {top_x_clientes} Clientes con más Incidencias", ln=True)
+    indice_items.append((f"Top {top_x_clientes} Clientes con más Incidencias", pdf.page_no() + 1))  # +1 porque la siguiente página será la de contenido
 
+    # --- Sección: Tipos de Incidencia ---
+    indice_items.append((f"Top {top_x_incidencias} Tipos de Incidencias por Tiempo Promedio", pdf.page_no() + 1))
+    
+    # --- Sección: Vulnerabilidades ---
+    indice_items.append((f"Top {top_x_vulnerabilidades} Vulnerabilidades Más Frecuentes", pdf.page_no() + 1))
+
+    # --- Completar el índice ---
+    pdf.set_font("Arial", "", 12)
+    for item, page in indice_items:
+        pdf.cell(0, 10, f"{item} - Página {page}", ln=True)
+
+    # --- Sección: Clientes ---
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 14)
+    pdf.cell(0, 10, f"Top {top_x_clientes} Clientes con más Incidencias", ln=True)
+    pdf.ln(5)
+
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(100, 10, "Cliente", 1, 0, "C")
+    pdf.cell(50, 10, "Incidencias", 1, 1, "C")
+
+    pdf.set_font("Arial", "", 12)
     for idx, row in df_clientes.head(top_x_clientes).iterrows():
-        pdf.cell(0, 10, f"{row['nombre_cliente']} - {row['num_incidencias']} incidencias", ln=True)
+        pdf.cell(100, 10, row['nombre_cliente'], 1)
+        pdf.cell(50, 10, str(row['num_incidencias']), 1, 1)
+
+    # Línea divisoria
+    agregar_linea(pdf)
 
     # Imagen: gráfico de clientes
     try:
-        grafico_clientes_temp = imagen_a_ruta_temporal(grafico_top_clientes_path)
-        pdf.image(grafico_clientes_temp, w=180)
-    finally:
-        if os.path.exists(grafico_clientes_temp):
-            os.unlink(grafico_clientes_temp)
+        pdf.image(grafico_top_clientes_path, w=180)
+    except Exception as e:
+        print(f"Error al agregar la imagen de clientes: {e}")
 
     # --- Sección: Tipos de Incidencia ---
+    pdf.add_page()
     pdf.ln(10)
+    pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 10, f"Top {top_x_incidencias} Tipos de Incidencias por Tiempo Promedio", ln=True)
+    pdf.ln(5)
 
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(120, 10, "Tipo de Incidencia", 1, 0, "C")
+    pdf.cell(50, 10, "Tiempo Promedio (horas)", 1, 1, "C")
+
+    pdf.set_font("Arial", "", 12)
     for idx, row in df_incidencias.head(top_x_incidencias).iterrows():
-        pdf.cell(0, 10, f"{row['nombre_tipo_incidencia']} - {round(row['tiempo_trabajado_promedio'], 2)} horas", ln=True)
+        pdf.cell(120, 10, row['nombre_tipo_incidencia'], 1)
+        pdf.cell(50, 10, f"{round(row['tiempo_trabajado_promedio'], 2)}", 1, 1)
+
+    # Línea divisoria
+    agregar_linea(pdf)
 
     # Imagen: gráfico de incidencias
     try:
-        grafico_incidencias_temp = imagen_a_ruta_temporal(grafico_top_incidencias_path)
-        pdf.image(grafico_incidencias_temp, w=180)
-    finally:
-        if os.path.exists(grafico_incidencias_temp):
-            os.unlink(grafico_incidencias_temp)
+        pdf.image(grafico_top_incidencias_path, w=180)
+    except Exception as e:
+        print(f"Error al agregar la imagen de incidencias: {e}")
 
     # --- Sección: Vulnerabilidades ---
+    pdf.add_page()
     pdf.ln(10)
+    pdf.set_font("Arial", "B", 14)
     pdf.cell(0, 10, f"Top {top_x_vulnerabilidades} Vulnerabilidades Más Frecuentes", ln=True)
+    pdf.ln(5)
 
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(60, 10, "ID del CVE", 1, 0, "C")
+    pdf.cell(120, 10, "Descripción", 1, 1, "C")
+
+    pdf.set_font("Arial", "", 10)
     for idx, row in df_vulnerabilidades.head(top_x_vulnerabilidades).iterrows():
-        pdf.cell(0, 10, f"{row['nombre_vulnerabilidad']} - {row['frecuencia']} veces", ln=True)
+        pdf.cell(60, 10, row['nombre_vulnerabilidad'], 1)
+        pdf.multi_cell(120, 10, row['frecuencia'], border=1)
+
+    # Pie de página
+    agregar_pie_pagina(pdf)
 
     # Guardar el PDF
     output_dir = os.path.join("src", "static", "pdf")
@@ -106,4 +195,3 @@ def generar_pdf_reporte(
     output_path = os.path.join(output_dir, "informe_seguridad.pdf")
     pdf.output(output_path)
     return output_path
-
