@@ -188,7 +188,7 @@ def generar_pdf_reporte(
     agregar_pie_pagina(pdf)
 
     # Guardar el PDF
-    output_dir = os.path.join("src", "static", "pdf")
+    output_dir = os.path.join("static", "pdf")
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
