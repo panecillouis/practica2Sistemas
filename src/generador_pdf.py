@@ -6,24 +6,7 @@ import tempfile
 import shutil
 import datetime
 
-def imagen_a_ruta_temporal(path_original):
-    """Copia la imagen a un archivo temporal y devuelve su ruta."""
-    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-    shutil.copy(path_original, temp_file.name)
-    return temp_file.name
 
-def imagen_a_bytesio(ruta_imagen):
-    """
-    Convierte una imagen en disco (ruta_imagen) a un objeto BytesIO para insertarla en PDF.
-    """
-    try:
-        with open(ruta_imagen, 'rb') as f:
-            buffer = BytesIO(f.read())
-            buffer.seek(0)
-            return buffer
-    except FileNotFoundError:
-        return None
-    
 def agregar_linea(pdf):
     pdf.set_draw_color(0, 0, 0) 
     pdf.set_line_width(0.5)    
@@ -109,10 +92,10 @@ def generar_pdf_reporte(
     indice_items.append((f"Top {top_x_clientes} Clientes con más Incidencias", pdf.page_no() + 1))  # +1 porque la siguiente página será la de contenido
 
     # --- Sección: Tipos de Incidencia ---
-    indice_items.append((f"Top {top_x_incidencias} Tipos de Incidencias por Tiempo Promedio", pdf.page_no() + 1))
+    indice_items.append((f"Top {top_x_incidencias} Tipos de Incidencias por Tiempo Promedio", pdf.page_no() + 2))
     
     # --- Sección: Vulnerabilidades ---
-    indice_items.append((f"Top {top_x_vulnerabilidades} Vulnerabilidades Más Frecuentes", pdf.page_no() + 1))
+    indice_items.append((f"Top {top_x_vulnerabilidades} Vulnerabilidades Más Frecuentes", pdf.page_no() + 3))
 
     # --- Completar el índice ---
     pdf.set_font("Arial", "", 12)
@@ -188,7 +171,7 @@ def generar_pdf_reporte(
     agregar_pie_pagina(pdf)
 
     # Guardar el PDF
-    output_dir = os.path.join("static", "pdf")
+    output_dir = os.path.join(os.path.dirname(__file__), "static", "pdf")
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
