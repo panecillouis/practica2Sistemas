@@ -19,5 +19,12 @@
         "nivel": 1,
         "fecha_contrato": "2024-04-22",
         "avatar": "https://i.ytimg.com/vi/srrOBCWT7ic/hqdefault.jpg"
+    },
+    "115": {
+        "username": "Alberto Sánchez",
+        "password": "$2b$12$7BqlEG8GpdQrIUqw005vDuRUekk9byI7WYaCaGekC8DWhKuSnkR7u",
+        "nivel": 1,
+        "fecha_contrato": "2024-07-13",
+        "avatar": "https://globalsymbols.com/uploads/production/image/imagefile/17674/17_17675_41ec0485-a97d-467f-80e3-9eb573ded0da.png"
     }
 }

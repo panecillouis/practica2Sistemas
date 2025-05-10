@@ -158,6 +158,7 @@ def top_tipos_de_incidencias_con_mayor_resolucion():
                            incidencias=incidencias,
                            )
 @app.route('/vulnerabilidades')
+@login_required
 def ultimas_vulnerabilidades():
     ultimos_cves = obtener_ultimos_cves(10)
     return render_template('vulnerabilidades.html', cves=ultimos_cves)
@@ -258,6 +259,7 @@ def generar_pdf():
     return send_file(pdf_file, as_attachment=True, download_name="reporte.pdf", mimetype="application/pdf")
 
 @app.route("/prediccion_cliente", methods=["GET", "POST"])
+@login_required
 def prediccion_cliente():
     if request.method == "GET":
         # Cargar datos de clientes e incidentes desde la base de datos
